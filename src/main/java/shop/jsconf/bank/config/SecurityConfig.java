@@ -1,5 +1,6 @@
 package shop.jsconf.bank.config;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
@@ -12,6 +13,8 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import shop.jsconf.bank.domain.user.UserEnum;
+import shop.jsconf.bank.dto.ResponseDto;
+import shop.jsconf.bank.util.CustomResponseUtil;
 
 @Configuration
 public class SecurityConfig {
@@ -42,9 +45,7 @@ public class SecurityConfig {
 
         // Exception 가로채기
         http.exceptionHandling().authenticationEntryPoint((request, response, authException) -> {
-            //response.setContentType("application/json; charset=utf-8");
-            response.setStatus(403);
-            response.getWriter().println("error"); // 예쁘게 메시지를 포장하는 공톡적인 응답 DTO를 만들어보자!!
+            CustomResponseUtil.unAuthentication(response, "로그인을 진행해 주세요");
         });
 
         http.authorizeRequests()
