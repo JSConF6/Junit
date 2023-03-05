@@ -27,7 +27,7 @@ public class SecurityConfigTest {
         //given
 
         //when
-        ResultActions resultActions = mvc.perform(get("/api/s/hello"));
+        ResultActions resultActions = mvc.perform(get("/api/s/hello")); // MockMvcRequestBuilders.get()
         String responseBody = resultActions.andReturn().getResponse().getContentAsString();
         int httpStatusCode = resultActions.andReturn().getResponse().getStatus();
         System.out.println("테스트 : " + responseBody);
