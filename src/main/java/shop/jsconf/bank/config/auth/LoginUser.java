@@ -6,7 +6,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import shop.jsconf.bank.domain.user.User;
 
-import java.util.ArrayDeque;
+import java.util.ArrayList;
 import java.util.Collection;
 
 @Getter
@@ -17,7 +17,7 @@ public class LoginUser implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        Collection<GrantedAuthority> authorities = new ArrayDeque<>();
+        Collection<GrantedAuthority> authorities = new ArrayList<>();
         authorities.add(() -> "ROLE_" + user.getRole());
         return authorities;
     }
