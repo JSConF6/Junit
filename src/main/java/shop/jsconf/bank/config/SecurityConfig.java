@@ -63,7 +63,7 @@ public class SecurityConfig {
 
         // 인증 실패
         http.exceptionHandling().authenticationEntryPoint((request, response, authException) -> {
-            CustomResponseUtil.fail(response, "로그인을 진행해 주세요", HttpStatus.BAD_REQUEST);
+            CustomResponseUtil.fail(response, "로그인을 진행해 주세요", HttpStatus.UNAUTHORIZED);
         });
 
         // 권한 실패
