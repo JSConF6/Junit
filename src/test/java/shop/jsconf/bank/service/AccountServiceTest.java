@@ -14,10 +14,12 @@ import shop.jsconf.bank.domain.user.User;
 import shop.jsconf.bank.domain.user.UserRepository;
 import shop.jsconf.bank.dto.account.AccountReqDto;
 import shop.jsconf.bank.dto.account.AccountRespDto;
+import shop.jsconf.bank.handler.ex.CustomApiException;
 
 import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static shop.jsconf.bank.dto.account.AccountReqDto.*;
@@ -65,5 +67,20 @@ public class AccountServiceTest extends DummyObject {
 
         // then
         assertThat(accountSaveRespDto.getNumber()).isEqualTo(1111);
+    }
+
+    @Test
+    public void delete_account_test() throws Exception {
+        // given
+        Long number = 1111L;
+        Long userId = 2L;
+
+        // stub
+        User ssar = newMockUser(1L, "ssar", "쌀");
+        Account ssarAccount = newMockAccount(1L, 1111L, 1000L, ssar);
+        when(accountRepository.findByNumber(any())).thenReturn(Optional.of(ssarAccount));
+
+        // when
+        assertThrows(CustomApiException.class, () -> accountService.deleteAccount(number ,userId));
     }
 }

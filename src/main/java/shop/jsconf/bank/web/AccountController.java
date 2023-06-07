@@ -11,6 +11,7 @@ import shop.jsconf.bank.dto.ResponseDto;
 import shop.jsconf.bank.dto.account.AccountReqDto;
 import shop.jsconf.bank.dto.account.AccountReqDto.AccountSaveReqDto;
 import shop.jsconf.bank.dto.account.AccountRespDto;
+import shop.jsconf.bank.dto.account.AccountRespDto.AccountListRespDto;
 import shop.jsconf.bank.dto.account.AccountRespDto.AccountSaveRespDto;
 import shop.jsconf.bank.handler.ex.CustomForbiddenException;
 import shop.jsconf.bank.service.AccountService;
@@ -42,5 +43,11 @@ public class AccountController {
     public ResponseEntity<?> findUserAccount(@AuthenticationPrincipal LoginUser loginUser) {
         AccountListRespDto accountListRespDto = accountService.userAccountList(loginUser.getUser().getId());
         return new ResponseEntity<>(new ResponseDto<>(1, "유저별 계좌목록 보기 성공", accountListRespDto), HttpStatus.OK);
+    }
+
+    @DeleteMapping("/s/account/{number}")
+    public ResponseEntity<?> deleteAccount(@PathVariable Long number, @AuthenticationPrincipal LoginUser loginUser) {
+        accountService.deleteAccount(number, loginUser.getUser().getId());
+        return new ResponseEntity<>(new ResponseDto<>(1, "계좌 삭제 완료", null), HttpStatus.OK);
     }
 }
