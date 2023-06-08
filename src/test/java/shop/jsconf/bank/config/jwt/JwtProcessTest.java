@@ -10,14 +10,20 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class JwtProcessTest {
 
-    @Test
-    public void create_test() throws Exception {
-        // given
+    private String createToken() {
         User user = User.builder().id(1L).role(UserEnum.ADMIN).build();
         LoginUser loginUser = new LoginUser(user);
 
-        // when
         String jwtToken = JwtProcess.create(loginUser);
+        return jwtToken;
+    }
+
+    @Test
+    public void create_test() throws Exception {
+        // given
+
+        // when
+        String jwtToken = createToken();
         System.out.println("테스트 : " + jwtToken);
 
         // then
@@ -27,10 +33,10 @@ public class JwtProcessTest {
     @Test
     public void verify_test() throws Exception {
         // given
-        String jwtToken = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJiYW5rIiwicm9sZSI6IkFETUlOIiwiaWQiOjEsImV4cCI6MTY4NjEzOTk2NX0.L7XTwkuAqlhHY0Ai1B86ue0kvMEDmsGCJECjsLfyAljdqhxGg5OTlwP_nu496aMc_p7pTfKOogu-bQs72qQacw";
+        String token = createToken(); // Bearer 제거해서 처리하기
+        String jwtToken = token.replace(JwtVO.TOKEN_PREFIX, "");
 
         // when
-
         LoginUser loginUser = JwtProcess.verify(jwtToken);
         System.out.println("테스트 : " + loginUser.getUser().getId());
         System.out.println("테스트 : " + loginUser.getUser().getRole().name());
