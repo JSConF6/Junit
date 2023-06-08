@@ -8,13 +8,11 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
-import org.springframework.transaction.annotation.Transactional;
 import shop.jsconf.bank.config.dummy.DummyObject;
-import shop.jsconf.bank.domain.user.User;
 import shop.jsconf.bank.domain.user.UserRepository;
-import shop.jsconf.bank.dto.user.UserRequestDto;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -23,11 +21,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static shop.jsconf.bank.dto.user.UserRequestDto.*;
 
-@Transactional
+// SpringBootTest ㅎㅏ는 곳에는 전부다 teardown.sql 을 붙여주자
+@Sql("classpath:db/teardown.sql") // 실행시점 : BeforeEach 실행 직전마다
 @ActiveProfiles("test")
 @AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)
-public class JwtAuthenticationTest extends DummyObject {
+public class JwtAuthenticationFilterTest extends DummyObject {
 
     @Autowired
     private ObjectMapper om;
