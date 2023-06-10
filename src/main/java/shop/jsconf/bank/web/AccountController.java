@@ -18,6 +18,8 @@ import shop.jsconf.bank.service.AccountService;
 
 import javax.validation.Valid;
 
+import static shop.jsconf.bank.dto.account.AccountReqDto.*;
+import static shop.jsconf.bank.dto.account.AccountRespDto.*;
 import static shop.jsconf.bank.service.AccountService.*;
 
 @RequiredArgsConstructor
