@@ -17,6 +17,7 @@ import shop.jsconf.bank.domain.user.UserRepository;
 import shop.jsconf.bank.dto.account.AccountReqDto;
 import shop.jsconf.bank.dto.account.AccountRespDto;
 import shop.jsconf.bank.handler.ex.CustomApiException;
+import shop.jsconf.bank.service.AccountService.AccountWithdrawReqDto;
 
 import java.util.Optional;
 
@@ -168,5 +169,30 @@ public class AccountServiceTest extends DummyObject {
 
         // then
         assertThat(account.getBalance()).isEqualTo(1100L);
+    }
+
+    // 계좌 출금 테스트 (서비스)
+    @Test
+    public void withdrawAccount_test() throws Exception {
+        // given
+        Long amount = 100L;
+        Long password = 1234L;
+        Long userId = 1L;
+
+        User ssar = newMockUser(1L, "ssar", "쌀");
+        Account ssarAccount = newMockAccount(1L, 1111L, 1000L, ssar);
+
+        // when
+        if (amount <= 0) {
+            throw new CustomApiException("0원 이하의 금액을 입금할 수 없습니다");
+        }
+
+        ssarAccount.checkOwner(userId);
+        ssarAccount.checkSamePassword(password);
+        ssarAccount.checkBalance(amount);
+        ssarAccount.withdraw(amount);
+
+        // then
+        assertThat(ssarAccount.getBalance()).isEqualTo(900L);
     }
 }
