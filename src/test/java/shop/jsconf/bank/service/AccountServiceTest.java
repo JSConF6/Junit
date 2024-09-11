@@ -14,10 +14,7 @@ import shop.jsconf.bank.domain.transaction.Transaction;
 import shop.jsconf.bank.domain.transaction.TransactionRepository;
 import shop.jsconf.bank.domain.user.User;
 import shop.jsconf.bank.domain.user.UserRepository;
-import shop.jsconf.bank.dto.account.AccountReqDto;
-import shop.jsconf.bank.dto.account.AccountRespDto;
 import shop.jsconf.bank.handler.ex.CustomApiException;
-import shop.jsconf.bank.service.AccountService.AccountWithdrawReqDto;
 
 import java.util.Optional;
 
@@ -25,8 +22,10 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
-import static shop.jsconf.bank.dto.account.AccountReqDto.*;
-import static shop.jsconf.bank.dto.account.AccountRespDto.*;
+import static shop.jsconf.bank.dto.account.AccountReqDto.AccountDepositReqDto;
+import static shop.jsconf.bank.dto.account.AccountReqDto.AccountSaveReqDto;
+import static shop.jsconf.bank.dto.account.AccountRespDto.AccountDepositRespDto;
+import static shop.jsconf.bank.dto.account.AccountRespDto.AccountSaveRespDto;
 
 @ExtendWith(MockitoExtension.class)
 public class AccountServiceTest extends DummyObject {

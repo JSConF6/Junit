@@ -1,9 +1,6 @@
 package shop.jsconf.bank.service;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import lombok.Setter;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import shop.jsconf.bank.domain.account.Account;
@@ -13,23 +10,17 @@ import shop.jsconf.bank.domain.transaction.TransactionEnum;
 import shop.jsconf.bank.domain.transaction.TransactionRepository;
 import shop.jsconf.bank.domain.user.User;
 import shop.jsconf.bank.domain.user.UserRepository;
-import shop.jsconf.bank.dto.account.AccountReqDto;
 import shop.jsconf.bank.dto.account.AccountRespDto;
 import shop.jsconf.bank.dto.account.AccountRespDto.AccountSaveRespDto;
+import shop.jsconf.bank.dto.account.AccountRespDto.AccountWithdrawRespDto;
 import shop.jsconf.bank.handler.ex.CustomApiException;
-import shop.jsconf.bank.util.CustomDateUtil;
 
-import javax.validation.constraints.Digits;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import static shop.jsconf.bank.dto.account.AccountReqDto.*;
-import static shop.jsconf.bank.dto.account.AccountRespDto.*;
+import static shop.jsconf.bank.dto.account.AccountRespDto.AccountDepositRespDto;
+import static shop.jsconf.bank.dto.account.AccountRespDto.AccountListRespDto;
 
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -122,7 +113,7 @@ public class AccountService {
     }
 
     @Transactional
-    public AccountDepositRespDto withdrawAccount(AccountWithdrawReqDto accountWithdrawReqDto, Long userId) {
+    public AccountWithdrawRespDto withdrawAccount(AccountWithdrawReqDto accountWithdrawReqDto, Long userId) {
         if (accountWithdrawReqDto.getAmount() <= 0) {
             throw new CustomApiException("0원 이하의 금액을 입금할 수 없습니다");
         }
@@ -159,22 +150,6 @@ public class AccountService {
         Transaction transactionPS = transactionRepository.save(transaction);
 
         // DTO 응답
-        return new AccountDepositRespDto(withdrawAccountPS, transactionPS);
-    }
-
-    @Getter
-    @Setter
-    public static class AccountWithdrawReqDto {
-        @NotNull
-        @Digits(integer = 4, fraction = 4)
-        private Long number;
-        @NotNull
-        @Digits(integer = 4, fraction = 4)
-        private Long password;
-        @NotNull
-        private Long amount;
-        @NotEmpty
-        @Pattern(regexp = "WITHDRAW")
-        private String gubun;
+        return new AccountWithdrawRespDto(withdrawAccountPS, transactionPS);
     }
 }
