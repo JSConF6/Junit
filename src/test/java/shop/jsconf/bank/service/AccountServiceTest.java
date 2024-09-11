@@ -14,6 +14,7 @@ import shop.jsconf.bank.domain.transaction.Transaction;
 import shop.jsconf.bank.domain.transaction.TransactionRepository;
 import shop.jsconf.bank.domain.user.User;
 import shop.jsconf.bank.domain.user.UserRepository;
+import shop.jsconf.bank.dto.account.AccountReqDto.AccountTransferReqDto;
 import shop.jsconf.bank.handler.ex.CustomApiException;
 
 import java.util.Optional;
@@ -193,5 +194,49 @@ public class AccountServiceTest extends DummyObject {
 
         // then
         assertThat(ssarAccount.getBalance()).isEqualTo(900L);
+    }
+
+    // 계좌 이체 테스트
+    @Test
+    public void transferTest() {
+        // given
+        Long userId = 1L;
+        AccountTransferReqDto accountTransferReqDto = new AccountTransferReqDto();
+        accountTransferReqDto.setWithdrawNumber(1111L);
+        accountTransferReqDto.setDepositNumber(2222L);
+        accountTransferReqDto.setWithdrawPassword(1234L);
+        accountTransferReqDto.setAmount(100L);
+        accountTransferReqDto.setGubun("TRANSFER");
+
+        User ssar = newMockUser(1L, "ssar", "ssar");
+        User cos = newMockUser(1L, "cos", "cos");
+        Account withdrawAccount = newMockAccount(1L, 1111L, 1000L, ssar);
+        Account depositAccount = newMockAccount(2L, 2222L, 1000L, cos);
+        
+        // when
+        if (accountTransferReqDto.getWithdrawNumber().longValue() == accountTransferReqDto.getDepositNumber().longValue()) {
+            throw new CustomApiException("입출금계좌가 동일할 수 없습니다.");
+        }
+
+        if (accountTransferReqDto.getAmount() <= 0L) {
+            throw new CustomApiException("0원 이하의 금액을 입금할 수 없습니다");
+        }
+
+        // 출금 소유자 확인 (로그인한 사람과 동일한지)
+        withdrawAccount.checkOwner(userId);
+
+        // 출금계좌 비밀번호 홧인
+        withdrawAccount.checkSamePassword(accountTransferReqDto.getWithdrawPassword());
+
+        // 출금계좌 잔액 확인
+        withdrawAccount.checkBalance(accountTransferReqDto.getAmount());
+
+        // 이체하기
+        withdrawAccount.withdraw(accountTransferReqDto.getAmount());
+        depositAccount.deposit(accountTransferReqDto.getAmount());
+        
+        // then
+        assertThat(withdrawAccount.getBalance()).isEqualTo(900L);
+        assertThat(depositAccount.getBalance()).isEqualTo(1100L);
     }
 }

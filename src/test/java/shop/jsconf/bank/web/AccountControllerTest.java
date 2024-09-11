@@ -129,6 +129,7 @@ public class AccountControllerTest extends DummyObject {
         resultActions.andExpect(status().isCreated());
     }
 
+    @WithUserDetails(value = "ssar", setupBefore = TestExecutionEvent.TEST_EXECUTION) // DB에서 username=ssar 조회를 해서 세션에 담아주는 어노테이션
     @Test
     public void withdrawAccount_test() throws Exception {
         // given
@@ -147,5 +148,29 @@ public class AccountControllerTest extends DummyObject {
         System.out.println("테스트 : " + responseBody);
 
         // then
+        resultActions.andExpect(status().isCreated());
+    }
+
+    @WithUserDetails(value = "ssar", setupBefore = TestExecutionEvent.TEST_EXECUTION) // DB에서 username=ssar 조회를 해서 세션에 담아주는 어노테이션
+    @Test
+    public void transferAccount_test() throws Exception {
+        // given
+        AccountTransferReqDto accountTransferReqDto = new AccountTransferReqDto();
+        accountTransferReqDto.setWithdrawNumber(1111L);
+        accountTransferReqDto.setDepositNumber(2222L);
+        accountTransferReqDto.setWithdrawPassword(1234L);
+        accountTransferReqDto.setAmount(100L);
+        accountTransferReqDto.setGubun("TRANSFER");
+
+        String requestBody = om.writeValueAsString(accountTransferReqDto);
+        System.out.println("테스트 : " + requestBody);
+
+        // when
+        ResultActions resultActions = mvc.perform(post("/api/s/account/transfer").content(requestBody).contentType(MediaType.APPLICATION_JSON));
+        String responseBody = resultActions.andReturn().getResponse().getContentAsString();
+        System.out.println("테스트 : " + responseBody);
+
+        // then
+        resultActions.andExpect(status().isCreated());
     }
 }
